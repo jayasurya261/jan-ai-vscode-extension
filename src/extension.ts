@@ -13,17 +13,20 @@ export function activate(context: vscode.ExtensionContext) {
             }
         }
 
-        // Check if the model is available, if not pull it
-        if (!(await isModelAvailable('deepseek-r1:1.5b'))) {
-            vscode.window.showInformationMessage("Downloading AI model, please wait...");
-            try {
-                await ollama.pull({
-                    model: 'deepseek-r1:1.5b', // Model name
-                    stream: false,               // Set to true for streaming or false as per your need
-                });
-                vscode.window.showInformationMessage("Model downloaded successfully.");
-            } catch (error) {
-                vscode.window.showErrorMessage(`Failed to download model: ${String(error)}`);
+        // Ask user to choose the model
+        const model = await vscode.window.showQuickPick(['deepseek-r1:1.5b', 'deepseek-r1:7b'], {
+            placeHolder: 'Select the AI model to use',
+        });
+
+        if (!model) {
+            vscode.window.showErrorMessage("No model selected. Please restart and select a model.");
+            return;
+        }
+
+        // Check if the selected model is available
+        if (!(await isModelAvailable(model))) {
+            const downloadConfirmed = await promptModelDownload(model);
+            if (!downloadConfirmed) {
                 return;
             }
         }
@@ -42,7 +45,7 @@ export function activate(context: vscode.ExtensionContext) {
                 const userPrompt = message.text;
                 try {
                     const response = await ollama.chat({
-                        model: 'deepseek-r1:1.5b',
+                        model: model,
                         messages: [{ role: 'user', content: userPrompt }],
                         stream: true
                     });
@@ -91,13 +94,25 @@ async function isModelAvailable(model: string): Promise<boolean> {
 // Prompt the user to install Ollama manually
 async function promptInstall(): Promise<boolean> {
     const selection = await vscode.window.showInformationMessage(
-        "Ollama is not installed. Would you like to download it?",
-        "Download", "Cancel"
+        "Ollama is not installed. Would you like to visit the Instruction website?",
+        "Visit Website", "Cancel"
     );
-    if (selection === "Download") {
-        vscode.env.openExternal(vscode.Uri.parse("https://ollama.ai"));
+    if (selection === "Visit Website") {
+        vscode.env.openExternal(vscode.Uri.parse("https://jan-ai-extension.vercel.app/"));
     }
-    return selection === "Download";
+    return selection === "Visit Website";
+}
+
+// Prompt the user to download the model manually
+async function promptModelDownload(model: string): Promise<boolean> {
+    const selection = await vscode.window.showInformationMessage(
+        `The model "${model}" is not available. Would you like to download it manually?`,
+        "Visit Model Page", "Cancel"
+    );
+    if (selection === "Visit Model Page") {
+        vscode.env.openExternal(vscode.Uri.parse("https://jan-ai-extension.vercel.app/"));
+    }
+    return selection === "Visit Model Page";
 }
 
 // Webview UI for chat interface
@@ -106,9 +121,6 @@ function getWebviewContent(): string {
     <!DOCTYPE html>
     <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline';">
         <title>Jan AI Chat</title>
         <style>
             :root {
@@ -119,6 +131,8 @@ function getWebviewContent(): string {
                 --button-hover: #74c7ec;
                 --input-bg: #313244;
                 --input-border: #585b70;
+                --input-focus: #89b4fa;
+                --loading-color: #89b4fa;
             }
             body {
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -140,14 +154,29 @@ function getWebviewContent(): string {
                 border-radius: 8px;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
                 border: 1px solid var(--border);
+                text-align: center;
             }
             h2 {
-                text-align: center;
                 margin-bottom: 1rem;
+            }
+            .top-link {
+                margin-bottom: 1rem;
+            }
+            .top-link a {
+                text-decoration: none;
+                background-color: var(--button-bg);
+                color: white;
+                padding: 0.5rem 1rem;
+                border-radius: 5px;
+                font-size: 1rem;
+                transition: background 0.3s;
+            }
+            .top-link a:hover {
+                background-color: var(--button-hover);
             }
             textarea {
                 width: 100%;
-                padding: 0.75rem;
+                padding: 8px;
                 margin-bottom: 0.75rem;
                 border: 1px solid var(--input-border);
                 background-color: var(--input-bg);
@@ -155,6 +184,12 @@ function getWebviewContent(): string {
                 border-radius: 5px;
                 resize: vertical;
                 font-size: 1rem;
+                transition: border-color 0.3s, box-shadow 0.3s;
+            }
+            textarea:focus {
+                border-color: var(--input-focus);
+                box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.2);
+                outline: none;
             }
             button {
                 width: 100%;
@@ -176,14 +211,26 @@ function getWebviewContent(): string {
                 max-width: 100%;
                 overflow-wrap: break-word;
             }
+            .loading {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 1rem;
+            }
         </style>
     </head>
     <body>
         <div class="chat-container">
+            <div class="top-link">
+                <a href="https://jan-ai-extension.vercel.app/" target="_blank">Visit Official Page</a>
+            </div>
             <h2>Jan AI Chat</h2>
             <textarea id="userInput" placeholder="Ask me anything..." rows="4"></textarea>
             <button onclick="sendMessage()">Send</button>
             <div id="response"></div>
+            <div class="loading" id="loading" style="display: none;">
+                <span>Loading...</span>
+            </div>
         </div>
         <script>
             const vscode = acquireVsCodeApi();
@@ -191,21 +238,14 @@ function getWebviewContent(): string {
             function sendMessage() {
                 const input = document.getElementById("userInput").value;
                 if (input.trim() === "") return;
-                
-                vscode.postMessage({
-                    command: 'chat',
-                    text: input
-                });
-
+                vscode.postMessage({ command: 'chat', text: input });
                 document.getElementById("userInput").value = "";
             }
 
-            window.addEventListener("message", event => {
-                const message = event.data;
-                if (message.command === "chatResponse") {
-                    document.getElementById("response").innerText = message.text;
-                } else if (message.command === "error") {
-                    document.getElementById("response").innerText = "Error: " + message.text;
+            document.getElementById("userInput").addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    sendMessage();
                 }
             });
         </script>

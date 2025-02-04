@@ -1,71 +1,45 @@
-# jan-ai README
+Ollama AI Runner – Run Powerful AI Models Locally in VS Code
+Introduction
+Ollama AI Runner is a cutting-edge Visual Studio Code extension that allows you to run AI models locally, providing unmatched security, privacy, and performance. With native support for Deepseek 1.5B and Deepseek 7B, this extension harnesses the power of on-device AI to supercharge your development workflow without relying on external servers or cloud-based inference.
 
-This is the README for your extension "jan-ai". After writing up a brief description, we recommend including the following sections.
+Key Features
+🚀 Run AI Models Locally – No Cloud Required
+Unlike traditional AI tools that require an internet connection and send data to external servers, Ollama AI Runner executes models directly on your machine. This guarantees:
 
-## Features
+Maximum Privacy & Security: Your data stays on your device—no external API calls or data leaks.
+Faster Response Times: Get instant AI-powered assistance without network latency.
+Full Offline Functionality: Run AI models anytime, even without internet access.
+🧠 Support for Large-Scale AI Models
+Currently, Ollama AI Runner supports:
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Deepseek 1.5B – A lightweight yet powerful AI model optimized for local execution.
+Deepseek 7B – A more advanced model offering deeper reasoning and enhanced contextual understanding.
+Future updates will bring support for additional models, making the extension even more versatile.
+🛠 Seamless VS Code Integration
+Designed to work effortlessly within your VS Code environment, Ollama AI Runner offers:
 
-For example if there is an image subfolder under your extension project workspace:
+Intelligent Code Suggestions: Auto-complete and generate code snippets based on your prompts.
+AI-Powered Debugging: Get AI-driven insights to debug and optimize your code efficiently.
+Context-Aware Chat: Ask programming questions, get documentation explanations, and receive AI-powered guidance right inside VS Code.
+📌 Lightweight & Efficient
+Ollama AI Runner is optimized for performance, ensuring that even large AI models run smoothly without hogging system resources.
 
-\!\[feature X\]\(images/feature-x.png\)
+🔒 Secure & Private by Design
+No Data Leaves Your Device: Since everything runs locally, there is zero risk of exposing sensitive code or data to third-party services.
+Full Control Over AI Models: Customize and fine-tune models as needed without vendor restrictions.
+Installation & Setup
+Installing and setting up Ollama AI Runner is effortless. The extension provides an instruction site that pops up as soon as you install it, guiding you through:
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+Downloading and configuring the required models.
+Setting up the local environment for smooth execution.
+Exploring customization options to enhance your AI-powered development experience.
+Future Roadmap
+We are continuously working to expand Ollama AI Runner with:
+✅ Support for additional AI models (e.g., Mistral, LLaMA, and more).
+✅ Custom model fine-tuning for personalized AI assistance.
+✅ Performance optimizations to handle even larger models efficiently.
 
-## Requirements
+Conclusion
+Ollama AI Runner is the perfect extension for developers who want powerful AI capabilities without compromising privacy, speed, or security. Whether you’re coding, debugging, or seeking AI-powered insights, this extension brings the future of local AI directly to your fingertips.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+🔗 Download & Get Started Today!
