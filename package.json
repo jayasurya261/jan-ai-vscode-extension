@@ -2,9 +2,14 @@
   "name": "jan-ai",
   "displayName": "JAN AI",
   "description": "Chat with Ollama models in VS Code",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "Jayasurya",
   "icon": "logo.png",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jayasurya261/jan-ai-vscode-extension.git"
+  },
+  "license": "MIT",
   "engines": {
     "vscode": "^1.96.0"
   },
