@@ -51,6 +51,9 @@ Ollama AI Runner is the perfect extension for developers who want **powerful AI 
 
 ---  
 
+## License
+Apache 2.0 - Because sharing is caring.
+
 🔗 **[Download & Get Started Today!](https://jan-ai-extension.vercel.app/)**  
 
 📢 **Need Help?** Open an issue on GitHub!  
